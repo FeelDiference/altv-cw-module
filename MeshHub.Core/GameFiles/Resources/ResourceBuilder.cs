@@ -675,7 +675,7 @@ namespace MeshHub.Core.GameFiles
         {
             using (MemoryStream ms = new MemoryStream(data))
             {
-                DeflateStream ds = new DeflateStream(ms, CompressionMode.Decompress);
+                DeflateStream ds = new DeflateStream(ms, CompressionMode.Decompress, true);
                 MemoryStream outstr = new MemoryStream();
                 ds.CopyTo(outstr);
                 byte[] deflated = outstr.GetBuffer();

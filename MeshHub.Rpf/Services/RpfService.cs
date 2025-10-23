@@ -32,12 +32,29 @@ namespace MeshHub.Rpf.Services
                 var archiveId = Guid.NewGuid().ToString();
                 var rpf = new RpfFile(rpfPath, Path.GetFileName(rpfPath));
                 
-                // НЕ сканируем архив сразу - ленивая загрузка!
-                // Сканирование произойдет только когда понадобится найти файл
-                _openedArchives[archiveId] = rpf;
-                _scannedArchives[archiveId] = false; // Помечаем как не отсканированный
+                // Загружаем только заголовок (без рекурсивного сканирования вложенных RPF)
+                using (var fs = File.OpenRead(rpfPath))
+                using (var br = new BinaryReader(fs))
+                {
+                    // Вызываем приватный метод ReadHeader через рефлексию
+                    var readHeaderMethod = typeof(RpfFile).GetMethod("ReadHeader", 
+                        System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    
+                    if (readHeaderMethod != null)
+                    {
+                        readHeaderMethod.Invoke(rpf, new object[] { br });
+                        Alt.Log($"[RpfService] ✅ Loaded RPF header: {rpfPath}");
+                    }
+                    else
+                    {
+                        Alt.LogError($"[RpfService] Failed to find ReadHeader method!");
+                    }
+                }
                 
-                Alt.Log($"[RpfService] ✅ Opened RPF: {rpfPath} (ID: {archiveId}) - lazy loading enabled");
+                _openedArchives[archiveId] = rpf;
+                _scannedArchives[archiveId] = false;
+                
+                Alt.Log($"[RpfService] ✅ Opened RPF: {rpfPath} (ID: {archiveId})");
                 return archiveId;
             }
             catch (Exception ex)
@@ -74,13 +91,10 @@ namespace MeshHub.Rpf.Services
 
             try
             {
-                var files = rpf.AllEntries
-                    .Where(e => e is RpfFileEntry)
-                    .Select(e => e.Path)
-                    .ToArray();
-
-                Alt.Log($"[RpfService] ✅ Listed {files.Length} files from archive: {archiveId}");
-                return files;
+                // НЕ СКАНИРУЕМ архив для списка файлов - слишком тяжело!
+                // Этот метод больше не используется для поиска .yft
+                Alt.LogWarning($"[RpfService] ListRpfFiles вызван, но не используется для mesh данных");
+                return Array.Empty<string>();
             }
             catch (Exception ex)
             {
@@ -102,16 +116,126 @@ namespace MeshHub.Rpf.Services
 
             try
             {
-                var entry = rpf.AllEntries
-                    .FirstOrDefault(e => e.Path.Equals(filePath, StringComparison.OrdinalIgnoreCase));
+                // Разбиваем путь на части
+                var pathParts = filePath.Split('/');
+                var currentDir = rpf.Root;
+                RpfEntry? currentEntry = null;
+                RpfFile currentRpf = rpf;
 
-                if (entry is not RpfFileEntry fileEntry)
+                // Проходим по каждой части пути
+                for (int i = 0; i < pathParts.Length; i++)
                 {
-                    Alt.LogError($"[RpfService] File not found: {filePath}");
+                    var part = pathParts[i];
+                    if (string.IsNullOrEmpty(part)) continue;
+
+                    // Логи отключены для производительности
+                    // Alt.Log($"[RpfService] 🔍 Checking part: {part}");
+
+                    // Проверяем что currentDir существует
+                    if (currentDir == null)
+                    {
+                        Alt.LogError($"[RpfService] Current directory is null!");
+                        return null;
+                    }
+
+                    // Если это последняя часть - ищем файл
+                    if (i == pathParts.Length - 1)
+                    {
+                        if (currentDir.Files == null)
+                        {
+                            Alt.LogError($"[RpfService] Files collection is null!");
+                            return null;
+                        }
+
+                        currentEntry = currentDir.Files
+                            .FirstOrDefault(f => f.Name.Equals(part, StringComparison.OrdinalIgnoreCase));
+
+                        if (currentEntry == null)
+                        {
+                            Alt.LogError($"[RpfService] File not found: {part}");
+                            return null;
+                        }
+                        break;
+                    }
+
+                    // Ищем следующую директорию или RPF файл
+                    RpfEntry? nextEntry = null;
+                    
+                    if (currentDir.Files != null)
+                    {
+                        nextEntry = currentDir.Files
+                            .FirstOrDefault(f => f.Name.Equals(part, StringComparison.OrdinalIgnoreCase));
+                    }
+                        
+                    if (nextEntry == null && currentDir.Directories != null)
+                    {
+                        nextEntry = currentDir.Directories
+                            .FirstOrDefault(d => d.Name.Equals(part, StringComparison.OrdinalIgnoreCase));
+                    }
+
+                    if (nextEntry == null)
+                    {
+                        Alt.LogError($"[RpfService] Entry not found: {part}");
+                        return null;
+                    }
+
+                    // Если это RPF файл - открываем его
+                    if (nextEntry is RpfFileEntry rpfEntry && part.EndsWith(".rpf", StringComparison.OrdinalIgnoreCase))
+                    {
+                        Alt.Log($"[RpfService] 📦 Opening nested RPF: {part}");
+                        
+                        // Извлекаем вложенный RPF
+                        var nestedRpfData = currentRpf.ExtractFile(rpfEntry);
+                        if (nestedRpfData == null)
+                        {
+                            Alt.LogError($"[RpfService] Failed to extract nested RPF: {part}");
+                            return null;
+                        }
+
+                        // Создаем временный файл для вложенного RPF
+                        var tempPath = Path.GetTempFileName();
+                        File.WriteAllBytes(tempPath, nestedRpfData);
+
+                        // Открываем вложенный RPF
+                        currentRpf = new RpfFile(tempPath, part);
+                        
+                        // Загружаем заголовок вложенного RPF
+                        using (var nestedFs = new MemoryStream(nestedRpfData))
+                        using (var nestedBr = new BinaryReader(nestedFs))
+                        {
+                            var readHeaderMethod = typeof(RpfFile).GetMethod("ReadHeader", 
+                                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                            
+                            if (readHeaderMethod != null)
+                            {
+                                readHeaderMethod.Invoke(currentRpf, new object[] { nestedBr });
+                                Alt.Log($"[RpfService] ✅ Loaded nested RPF header: {part}");
+                            }
+                        }
+                        
+                        currentDir = currentRpf.Root;
+
+                        Alt.Log($"[RpfService] ✅ Opened nested RPF: {part}");
+                    }
+                    else if (nextEntry is RpfDirectoryEntry dirEntry)
+                    {
+                        currentDir = dirEntry;
+                    }
+                    else
+                    {
+                        Alt.LogError($"[RpfService] Invalid entry type for: {part}");
+                        return null;
+                    }
+                }
+
+                // Проверяем что нашли файл
+                if (currentEntry is not RpfFileEntry fileEntry)
+                {
+                    Alt.LogError($"[RpfService] File not found or invalid type: {filePath}");
                     return null;
                 }
 
-                var data = rpf.ExtractFile(fileEntry);
+                var data = currentRpf.ExtractFile(fileEntry);
                 Alt.Log($"[RpfService] ✅ Extracted file: {filePath} ({data?.Length ?? 0} bytes)");
                 return data;
             }
@@ -177,18 +301,10 @@ namespace MeshHub.Rpf.Services
 
             try
             {
-                // ЛЕНИВОЕ СКАНИРОВАНИЕ: сканируем только когда нужно найти файл
-                if (!_scannedArchives.GetValueOrDefault(archiveId, false))
-                {
-                    Alt.Log($"[RpfService] 📂 Scanning archive structure (lazy loading)...");
-                    rpf.ScanStructure(null, null);
-                    _scannedArchives[archiveId] = true;
-                    Alt.Log($"[RpfService] ✅ Archive scanned");
-                }
+                // НЕ СКАНИРУЕМ! Пытаемся найти файл напрямую
+                Alt.Log($"[RpfService] 🔍 Searching for '{fileName}' (без сканирования)...");
                 
-                Alt.Log($"[RpfService] 🔍 Searching for '{fileName}'...");
-                
-                // Оптимизированный поиск без загрузки всех вложенных архивов
+                // Пытаемся найти файл без сканирования структуры
                 var found = FindFileRecursive(rpf.Root, fileName);
                 
                 if (found != null)

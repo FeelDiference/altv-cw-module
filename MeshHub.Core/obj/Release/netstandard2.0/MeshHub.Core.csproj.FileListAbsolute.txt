@@ -12,3 +12,4 @@ F:\rpf-repositories\altv-cw-module\MeshHub.Core\obj\Release\netstandard2.0\MeshH
 F:\rpf-repositories\altv-cw-module\MeshHub.Core\obj\Release\netstandard2.0\MeshHub.Core.csproj.CoreCompileInputs.cache
 F:\rpf-repositories\altv-cw-module\MeshHub.Core\obj\Release\netstandard2.0\MeshHub.Core.dll
 F:\rpf-repositories\altv-cw-module\MeshHub.Core\obj\Release\netstandard2.0\MeshHub.Core.pdb
+F:\rpf-repositories\altv-cw-module\MeshHub.Core\obj\Release\netstandard2.0\MeshHub.Core.sourcelink.json

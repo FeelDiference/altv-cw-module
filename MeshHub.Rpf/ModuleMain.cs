@@ -1,6 +1,7 @@
 using AltV.Net;
 using AltV.Net.Async;
 using System;
+using System.Collections.Generic;
 
 namespace MeshHub.Rpf
 {
@@ -11,6 +12,7 @@ namespace MeshHub.Rpf
     {
         public static Services.RpfService? RpfService { get; private set; }
         public static Services.HandlingService? HandlingService { get; private set; }
+        public static Services.MeshService? MeshService { get; private set; }
 
         public override void OnStart()
         {
@@ -21,6 +23,7 @@ namespace MeshHub.Rpf
                 // Инициализируем сервисы
                 RpfService = new Services.RpfService();
                 HandlingService = new Services.HandlingService(RpfService);
+                MeshService = new Services.MeshService(RpfService);
 
                 Alt.Log("[MeshHub.Rpf Resource] ✅ Services initialized");
 
@@ -154,6 +157,21 @@ namespace MeshHub.Rpf
                     }
                 }));
 
+                // Функция извлечения mesh данных из .yft файла
+                Alt.Export("extractVehicleMeshData", new Func<string, Dictionary<string, object>?>((vehicleName) =>
+                {
+                    try
+                    {
+                        Alt.Log($"[MeshHub.Rpf] Extracting mesh data for vehicle: {vehicleName}");
+                        return MeshService?.ExtractVehicleMeshData(vehicleName);
+                    }
+                    catch (Exception ex)
+                    {
+                        Alt.LogError($"[MeshHub.Rpf] Error extracting mesh data: {ex.Message}");
+                        return null;
+                    }
+                }));
+
                 Alt.Log("[MeshHub.Rpf Resource] ✅ Exports registered successfully");
                 Alt.Log("[MeshHub.Rpf Resource] Available exports:");
                 Alt.Log("  - openRpfArchive(path)");
@@ -163,6 +181,7 @@ namespace MeshHub.Rpf
                 Alt.Log("  - closeRpfArchive(archiveId)");
                 Alt.Log("  - getHandlingXml(archiveId, filePath)");
                 Alt.Log("  - saveHandlingXml(archiveId, filePath, xml)");
+                Alt.Log("  - extractVehicleMeshData(vehicleName)");
             }
             catch (Exception ex)
             {

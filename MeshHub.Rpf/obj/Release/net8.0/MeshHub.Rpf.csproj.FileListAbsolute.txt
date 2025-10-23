@@ -23,3 +23,4 @@ F:\rpf-repositories\altv-cw-module\MeshHub.Rpf\obj\Release\net8.0\refint\meshhub
 F:\rpf-repositories\altv-cw-module\MeshHub.Rpf\obj\Release\net8.0\meshhub-rpf-module.pdb
 F:\rpf-repositories\altv-cw-module\MeshHub.Rpf\obj\Release\net8.0\MeshHub.Rpf.genruntimeconfig.cache
 F:\rpf-repositories\altv-cw-module\MeshHub.Rpf\obj\Release\net8.0\ref\meshhub-rpf-module.dll
+F:\rpf-repositories\altv-cw-module\MeshHub.Rpf\obj\Release\net8.0\MeshHub.Rpf.sourcelink.json
