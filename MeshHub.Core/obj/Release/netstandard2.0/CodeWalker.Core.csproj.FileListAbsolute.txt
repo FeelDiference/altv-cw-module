@@ -1,0 +1,14 @@
+F:\rpf-repositories\altv-cw-module\CodeWalker.Core\bin\Release\netstandard2.0\ShadersGen9Conversion.xml
+F:\rpf-repositories\altv-cw-module\CodeWalker.Core\bin\Release\netstandard2.0\strings.txt
+F:\rpf-repositories\altv-cw-module\CodeWalker.Core\bin\Release\netstandard2.0\CodeWalker.Core.deps.json
+F:\rpf-repositories\altv-cw-module\CodeWalker.Core\bin\Release\netstandard2.0\CodeWalker.Core.dll
+F:\rpf-repositories\altv-cw-module\CodeWalker.Core\bin\Release\netstandard2.0\CodeWalker.Core.pdb
+F:\rpf-repositories\altv-cw-module\CodeWalker.Core\obj\Release\netstandard2.0\CodeWalker.Core.csproj.AssemblyReference.cache
+F:\rpf-repositories\altv-cw-module\CodeWalker.Core\obj\Release\netstandard2.0\CodeWalker.Core.Properties.Resources.resources
+F:\rpf-repositories\altv-cw-module\CodeWalker.Core\obj\Release\netstandard2.0\CodeWalker.Core.csproj.GenerateResource.cache
+F:\rpf-repositories\altv-cw-module\CodeWalker.Core\obj\Release\netstandard2.0\CodeWalker.Core.GeneratedMSBuildEditorConfig.editorconfig
+F:\rpf-repositories\altv-cw-module\CodeWalker.Core\obj\Release\netstandard2.0\CodeWalker.Core.AssemblyInfoInputs.cache
+F:\rpf-repositories\altv-cw-module\CodeWalker.Core\obj\Release\netstandard2.0\CodeWalker.Core.AssemblyInfo.cs
+F:\rpf-repositories\altv-cw-module\CodeWalker.Core\obj\Release\netstandard2.0\CodeWalker.Core.csproj.CoreCompileInputs.cache
+F:\rpf-repositories\altv-cw-module\CodeWalker.Core\obj\Release\netstandard2.0\CodeWalker.Core.dll
+F:\rpf-repositories\altv-cw-module\CodeWalker.Core\obj\Release\netstandard2.0\CodeWalker.Core.pdb

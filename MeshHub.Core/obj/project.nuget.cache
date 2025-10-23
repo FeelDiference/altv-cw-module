@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "sucwzpnSZvo=",
+  "success": true,
+  "projectFilePath": "F:\\rpf-repositories\\altv-cw-module\\MeshHub.Core\\MeshHub.Core.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\derbi\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "C:\\Users\\derbi\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512",
+    "C:\\Users\\derbi\\.nuget\\packages\\sharpdx\\4.2.0\\sharpdx.4.2.0.nupkg.sha512",
+    "C:\\Users\\derbi\\.nuget\\packages\\sharpdx.mathematics\\4.2.0\\sharpdx.mathematics.4.2.0.nupkg.sha512"
+  ],
+  "logs": []
+}

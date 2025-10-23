@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "dgSpecHash": "PmuME0mhTbE=",
+  "success": true,
+  "projectFilePath": "F:\\rpf-repositories\\altv-cw-module\\MeshHub.Rpf\\MeshHub.Rpf.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\derbi\\.nuget\\packages\\altv.net\\16.4.28-rc.2\\altv.net.16.4.28-rc.2.nupkg.sha512",
+    "C:\\Users\\derbi\\.nuget\\packages\\altv.net.async\\16.4.28-rc.2\\altv.net.async.16.4.28-rc.2.nupkg.sha512",
+    "C:\\Users\\derbi\\.nuget\\packages\\altv.net.capi\\16.4.28-rc.2\\altv.net.capi.16.4.28-rc.2.nupkg.sha512",
+    "C:\\Users\\derbi\\.nuget\\packages\\altv.net.shared\\16.4.28-rc.2\\altv.net.shared.16.4.28-rc.2.nupkg.sha512",
+    "C:\\Users\\derbi\\.nuget\\packages\\sharpdx\\4.2.0\\sharpdx.4.2.0.nupkg.sha512",
+    "C:\\Users\\derbi\\.nuget\\packages\\sharpdx.mathematics\\4.2.0\\sharpdx.mathematics.4.2.0.nupkg.sha512",
+    "C:\\Users\\derbi\\.nuget\\packages\\system.threading.channels\\6.0.0\\system.threading.channels.6.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

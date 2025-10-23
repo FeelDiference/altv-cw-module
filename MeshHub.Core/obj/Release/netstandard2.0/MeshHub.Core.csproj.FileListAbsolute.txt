@@ -1,0 +1,14 @@
+F:\rpf-repositories\altv-cw-module\MeshHub.Core\bin\Release\netstandard2.0\ShadersGen9Conversion.xml
+F:\rpf-repositories\altv-cw-module\MeshHub.Core\bin\Release\netstandard2.0\strings.txt
+F:\rpf-repositories\altv-cw-module\MeshHub.Core\bin\Release\netstandard2.0\MeshHub.Core.deps.json
+F:\rpf-repositories\altv-cw-module\MeshHub.Core\bin\Release\netstandard2.0\MeshHub.Core.dll
+F:\rpf-repositories\altv-cw-module\MeshHub.Core\bin\Release\netstandard2.0\MeshHub.Core.pdb
+F:\rpf-repositories\altv-cw-module\MeshHub.Core\obj\Release\netstandard2.0\MeshHub.Core.csproj.AssemblyReference.cache
+F:\rpf-repositories\altv-cw-module\MeshHub.Core\obj\Release\netstandard2.0\MeshHub.Core.Properties.Resources.resources
+F:\rpf-repositories\altv-cw-module\MeshHub.Core\obj\Release\netstandard2.0\MeshHub.Core.csproj.GenerateResource.cache
+F:\rpf-repositories\altv-cw-module\MeshHub.Core\obj\Release\netstandard2.0\MeshHub.Core.GeneratedMSBuildEditorConfig.editorconfig
+F:\rpf-repositories\altv-cw-module\MeshHub.Core\obj\Release\netstandard2.0\MeshHub.Core.AssemblyInfoInputs.cache
+F:\rpf-repositories\altv-cw-module\MeshHub.Core\obj\Release\netstandard2.0\MeshHub.Core.AssemblyInfo.cs
+F:\rpf-repositories\altv-cw-module\MeshHub.Core\obj\Release\netstandard2.0\MeshHub.Core.csproj.CoreCompileInputs.cache
+F:\rpf-repositories\altv-cw-module\MeshHub.Core\obj\Release\netstandard2.0\MeshHub.Core.dll
+F:\rpf-repositories\altv-cw-module\MeshHub.Core\obj\Release\netstandard2.0\MeshHub.Core.pdb

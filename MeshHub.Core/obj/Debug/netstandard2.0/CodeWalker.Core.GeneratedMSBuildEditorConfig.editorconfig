@@ -1,0 +1,8 @@
+is_global = true
+build_property.RootNamespace = CodeWalker.Core
+build_property.ProjectDir = /Users/feeld/Documents/GO_BACK_JIRA/codewalker_cli/CodeWalker.Core/
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.CsWinRTUseWindowsUIXamlProjections = false
+build_property.EffectiveAnalysisLevelStyle = 
+build_property.EnableCodeStyleSeverity = 

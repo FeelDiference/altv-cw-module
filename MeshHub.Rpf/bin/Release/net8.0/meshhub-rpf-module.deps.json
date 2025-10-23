@@ -1,0 +1,153 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "meshhub-rpf-module/1.0.0": {
+        "dependencies": {
+          "AltV.Net": "16.4.28-rc.2",
+          "AltV.Net.Async": "16.4.28-rc.2",
+          "MeshHub.Core": "1.0.0"
+        },
+        "runtime": {
+          "meshhub-rpf-module.dll": {}
+        }
+      },
+      "AltV.Net/16.4.28-rc.2": {
+        "dependencies": {
+          "AltV.Net.Shared": "16.4.28-rc.2"
+        },
+        "runtime": {
+          "lib/net8.0/AltV.Net.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "AltV.Net.Async/16.4.28-rc.2": {
+        "dependencies": {
+          "AltV.Net": "16.4.28-rc.2",
+          "System.Threading.Channels": "6.0.0"
+        },
+        "runtime": {
+          "lib/net8.0/AltV.Net.Async.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "AltV.Net.CApi/16.4.28-rc.2": {
+        "runtime": {
+          "lib/net8.0/AltV.Net.CApi.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "AltV.Net.Shared/16.4.28-rc.2": {
+        "dependencies": {
+          "AltV.Net.CApi": "16.4.28-rc.2"
+        },
+        "runtime": {
+          "lib/net8.0/AltV.Net.Shared.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "SharpDX/4.2.0": {
+        "runtime": {
+          "lib/netstandard1.1/SharpDX.dll": {
+            "assemblyVersion": "4.2.0.0",
+            "fileVersion": "4.2.0.0"
+          }
+        }
+      },
+      "SharpDX.Mathematics/4.2.0": {
+        "dependencies": {
+          "SharpDX": "4.2.0"
+        },
+        "runtime": {
+          "lib/netstandard1.1/SharpDX.Mathematics.dll": {
+            "assemblyVersion": "4.2.0.0",
+            "fileVersion": "4.2.0.0"
+          }
+        }
+      },
+      "System.Threading.Channels/6.0.0": {},
+      "MeshHub.Core/1.0.0": {
+        "dependencies": {
+          "SharpDX": "4.2.0",
+          "SharpDX.Mathematics": "4.2.0"
+        },
+        "runtime": {
+          "MeshHub.Core.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "meshhub-rpf-module/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "AltV.Net/16.4.28-rc.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-UtMVS44auOKd7WbUDjK4FXMjQ6qNL2PvQ5Ex7y9gsTKWcb+EFkdM3+f/epyxppZa+shka7jPYmTk3zrN1xesvg==",
+      "path": "altv.net/16.4.28-rc.2",
+      "hashPath": "altv.net.16.4.28-rc.2.nupkg.sha512"
+    },
+    "AltV.Net.Async/16.4.28-rc.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-R3X5OfwKR5bvA0HvUxvICPXbbZtLIwi6kIdx8GN46hXGKNFoTGwJ2BBYsTe+Nv81VlJfzRkiz838bTu6sMlG6A==",
+      "path": "altv.net.async/16.4.28-rc.2",
+      "hashPath": "altv.net.async.16.4.28-rc.2.nupkg.sha512"
+    },
+    "AltV.Net.CApi/16.4.28-rc.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-8QhrCBlxaYdtD6lz+tTkFjF2MR7RcGUqyQncfDyqeCaYQ/hZuMoWvH0Rxau0PlD2FKJ1SgBVjTABzIIyFoqQgg==",
+      "path": "altv.net.capi/16.4.28-rc.2",
+      "hashPath": "altv.net.capi.16.4.28-rc.2.nupkg.sha512"
+    },
+    "AltV.Net.Shared/16.4.28-rc.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-IHwYqhD2nHm8kRdTfUMrSjepbBIIfPaJp0u0jZpVgwWCEjKW1TqTmfWbrlXmFN3C6Avap3zJC67YsJVBaWXFgA==",
+      "path": "altv.net.shared/16.4.28-rc.2",
+      "hashPath": "altv.net.shared.16.4.28-rc.2.nupkg.sha512"
+    },
+    "SharpDX/4.2.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-3pv0LFMvfK/dv1qISJnn8xBeeT6R/FRvr0EV4KI2DGsL84Qlv6P7isWqxGyU0LCwlSVCJN3jgHJ4Bl0KI2PJww==",
+      "path": "sharpdx/4.2.0",
+      "hashPath": "sharpdx.4.2.0.nupkg.sha512"
+    },
+    "SharpDX.Mathematics/4.2.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-R2pcKLgdsP9p5WyTjHmGOZ0ka0zASAZYc6P4L6rSvjYhf6klGYbent7MiVwbkwkt9dD44p5brjy5IwAnVONWGw==",
+      "path": "sharpdx.mathematics/4.2.0",
+      "hashPath": "sharpdx.mathematics.4.2.0.nupkg.sha512"
+    },
+    "System.Threading.Channels/6.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-TY8/9+tI0mNaUMgntOxxaq2ndTkdXqLSxvPmas7XEqOlv9lQtB7wLjYGd756lOaO7Dvb5r/WXhluM+0Xe87v5Q==",
+      "path": "system.threading.channels/6.0.0",
+      "hashPath": "system.threading.channels.6.0.0.nupkg.sha512"
+    },
+    "MeshHub.Core/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

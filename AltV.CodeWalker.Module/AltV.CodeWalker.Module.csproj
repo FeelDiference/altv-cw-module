@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <AssemblyName>MeshHub.Rpf</AssemblyName>
+    <RootNamespace>MeshHub.Rpf</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- ALT:V Server API -->
+    <PackageReference Include="AltV.Net" Version="16.4.28-rc.2" />
+    <PackageReference Include="AltV.Net.Async" Version="16.4.28-rc.2" />
+    
+    <!-- CodeWalker Core - используем локальный проект -->
+    <ProjectReference Include="..\CodeWalker.Core\CodeWalker.Core.csproj" />
+  </ItemGroup>
+
+</Project>
+

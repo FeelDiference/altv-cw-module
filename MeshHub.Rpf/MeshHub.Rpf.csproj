@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <AssemblyName>meshhub-rpf-module</AssemblyName>
+    <RootNamespace>MeshHub.Rpf</RootNamespace>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    
+    <!-- Native module settings for alt:V -->
+    <PublishAot>false</PublishAot>
+    <EnableUnmanagedCallersOnlyAttribute>true</EnableUnmanagedCallersOnlyAttribute>
+    <NativeLib>Shared</NativeLib>
+    <SelfContained>false</SelfContained>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- ALT:V Server API -->
+    <PackageReference Include="AltV.Net" Version="16.4.28-rc.2" />
+    <PackageReference Include="AltV.Net.Async" Version="16.4.28-rc.2" />
+    
+    <!-- MeshHub Core -->
+    <ProjectReference Include="..\MeshHub.Core\MeshHub.Core.csproj" />
+  </ItemGroup>
+
+</Project>
+

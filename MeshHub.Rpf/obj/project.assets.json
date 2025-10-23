@@ -1,0 +1,343 @@
+{
+  "version": 3,
+  "targets": {
+    "net8.0": {
+      "AltV.Net/16.4.28-rc.2": {
+        "type": "package",
+        "dependencies": {
+          "AltV.Net.Shared": "16.4.28-rc.2"
+        },
+        "compile": {
+          "lib/net8.0/AltV.Net.dll": {}
+        },
+        "runtime": {
+          "lib/net8.0/AltV.Net.dll": {}
+        }
+      },
+      "AltV.Net.Async/16.4.28-rc.2": {
+        "type": "package",
+        "dependencies": {
+          "AltV.Net": "16.4.28-rc.2",
+          "System.Threading.Channels": "6.0.0"
+        },
+        "compile": {
+          "lib/net8.0/AltV.Net.Async.dll": {}
+        },
+        "runtime": {
+          "lib/net8.0/AltV.Net.Async.dll": {}
+        }
+      },
+      "AltV.Net.CApi/16.4.28-rc.2": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/AltV.Net.CApi.dll": {}
+        },
+        "runtime": {
+          "lib/net8.0/AltV.Net.CApi.dll": {}
+        }
+      },
+      "AltV.Net.Shared/16.4.28-rc.2": {
+        "type": "package",
+        "dependencies": {
+          "AltV.Net.CApi": "16.4.28-rc.2"
+        },
+        "compile": {
+          "lib/net8.0/AltV.Net.Shared.dll": {}
+        },
+        "runtime": {
+          "lib/net8.0/AltV.Net.Shared.dll": {}
+        }
+      },
+      "SharpDX/4.2.0": {
+        "type": "package",
+        "dependencies": {
+          "NETStandard.Library": "1.6.1"
+        },
+        "compile": {
+          "lib/netstandard1.1/SharpDX.dll": {
+            "related": ".pdb"
+          }
+        },
+        "runtime": {
+          "lib/netstandard1.1/SharpDX.dll": {
+            "related": ".pdb"
+          }
+        }
+      },
+      "SharpDX.Mathematics/4.2.0": {
+        "type": "package",
+        "dependencies": {
+          "NETStandard.Library": "1.6.1",
+          "SharpDX": "4.2.0"
+        },
+        "compile": {
+          "lib/netstandard1.1/SharpDX.Mathematics.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard1.1/SharpDX.Mathematics.dll": {
+            "related": ".pdb;.xml"
+          }
+        }
+      },
+      "System.Threading.Channels/6.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/System.Threading.Channels.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/System.Threading.Channels.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/netcoreapp3.1/_._": {}
+        }
+      },
+      "MeshHub.Core/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.0",
+        "dependencies": {
+          "SharpDX": "4.2.0",
+          "SharpDX.Mathematics": "4.2.0"
+        },
+        "compile": {
+          "bin/placeholder/MeshHub.Core.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/MeshHub.Core.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "AltV.Net/16.4.28-rc.2": {
+      "sha512": "UtMVS44auOKd7WbUDjK4FXMjQ6qNL2PvQ5Ex7y9gsTKWcb+EFkdM3+f/epyxppZa+shka7jPYmTk3zrN1xesvg==",
+      "type": "package",
+      "path": "altv.net/16.4.28-rc.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "altv.net.16.4.28-rc.2.nupkg.sha512",
+        "altv.net.nuspec",
+        "icon.png",
+        "lib/net8.0/AltV.Net.dll",
+        "license.txt"
+      ]
+    },
+    "AltV.Net.Async/16.4.28-rc.2": {
+      "sha512": "R3X5OfwKR5bvA0HvUxvICPXbbZtLIwi6kIdx8GN46hXGKNFoTGwJ2BBYsTe+Nv81VlJfzRkiz838bTu6sMlG6A==",
+      "type": "package",
+      "path": "altv.net.async/16.4.28-rc.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "altv.net.async.16.4.28-rc.2.nupkg.sha512",
+        "altv.net.async.nuspec",
+        "icon.png",
+        "lib/net8.0/AltV.Net.Async.dll",
+        "license.txt"
+      ]
+    },
+    "AltV.Net.CApi/16.4.28-rc.2": {
+      "sha512": "8QhrCBlxaYdtD6lz+tTkFjF2MR7RcGUqyQncfDyqeCaYQ/hZuMoWvH0Rxau0PlD2FKJ1SgBVjTABzIIyFoqQgg==",
+      "type": "package",
+      "path": "altv.net.capi/16.4.28-rc.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "altv.net.capi.16.4.28-rc.2.nupkg.sha512",
+        "altv.net.capi.nuspec",
+        "icon.png",
+        "lib/net8.0/AltV.Net.CApi.dll",
+        "license.txt"
+      ]
+    },
+    "AltV.Net.Shared/16.4.28-rc.2": {
+      "sha512": "IHwYqhD2nHm8kRdTfUMrSjepbBIIfPaJp0u0jZpVgwWCEjKW1TqTmfWbrlXmFN3C6Avap3zJC67YsJVBaWXFgA==",
+      "type": "package",
+      "path": "altv.net.shared/16.4.28-rc.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "altv.net.shared.16.4.28-rc.2.nupkg.sha512",
+        "altv.net.shared.nuspec",
+        "icon.png",
+        "lib/net8.0/AltV.Net.Shared.dll",
+        "license.txt"
+      ]
+    },
+    "SharpDX/4.2.0": {
+      "sha512": "3pv0LFMvfK/dv1qISJnn8xBeeT6R/FRvr0EV4KI2DGsL84Qlv6P7isWqxGyU0LCwlSVCJN3jgHJ4Bl0KI2PJww==",
+      "type": "package",
+      "path": "sharpdx/4.2.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net40/.xml",
+        "lib/net40/SharpDX.dll",
+        "lib/net40/SharpDX.pdb",
+        "lib/net45/.xml",
+        "lib/net45/SharpDX.dll",
+        "lib/net45/SharpDX.pdb",
+        "lib/netstandard1.1/.xml",
+        "lib/netstandard1.1/SharpDX.dll",
+        "lib/netstandard1.1/SharpDX.pdb",
+        "lib/uap10.0/.xml",
+        "lib/uap10.0/SharpDX.dll",
+        "lib/uap10.0/SharpDX.pdb",
+        "lib/uap10.0/SharpDX.pri",
+        "sharpdx.4.2.0.nupkg.sha512",
+        "sharpdx.nuspec"
+      ]
+    },
+    "SharpDX.Mathematics/4.2.0": {
+      "sha512": "R2pcKLgdsP9p5WyTjHmGOZ0ka0zASAZYc6P4L6rSvjYhf6klGYbent7MiVwbkwkt9dD44p5brjy5IwAnVONWGw==",
+      "type": "package",
+      "path": "sharpdx.mathematics/4.2.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net40/SharpDX.Mathematics.dll",
+        "lib/net40/SharpDX.Mathematics.pdb",
+        "lib/net40/SharpDX.Mathematics.xml",
+        "lib/net45/SharpDX.Mathematics.dll",
+        "lib/net45/SharpDX.Mathematics.pdb",
+        "lib/net45/SharpDX.Mathematics.xml",
+        "lib/netstandard1.1/SharpDX.Mathematics.dll",
+        "lib/netstandard1.1/SharpDX.Mathematics.pdb",
+        "lib/netstandard1.1/SharpDX.Mathematics.xml",
+        "lib/uap10.0/SharpDX.Mathematics.dll",
+        "lib/uap10.0/SharpDX.Mathematics.pdb",
+        "lib/uap10.0/SharpDX.Mathematics.pri",
+        "lib/uap10.0/SharpDX.Mathematics.xml",
+        "sharpdx.mathematics.4.2.0.nupkg.sha512",
+        "sharpdx.mathematics.nuspec"
+      ]
+    },
+    "System.Threading.Channels/6.0.0": {
+      "sha512": "TY8/9+tI0mNaUMgntOxxaq2ndTkdXqLSxvPmas7XEqOlv9lQtB7wLjYGd756lOaO7Dvb5r/WXhluM+0Xe87v5Q==",
+      "type": "package",
+      "path": "system.threading.channels/6.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/netcoreapp2.0/System.Threading.Channels.targets",
+        "buildTransitive/netcoreapp3.1/_._",
+        "lib/net461/System.Threading.Channels.dll",
+        "lib/net461/System.Threading.Channels.xml",
+        "lib/net6.0/System.Threading.Channels.dll",
+        "lib/net6.0/System.Threading.Channels.xml",
+        "lib/netcoreapp3.1/System.Threading.Channels.dll",
+        "lib/netcoreapp3.1/System.Threading.Channels.xml",
+        "lib/netstandard2.0/System.Threading.Channels.dll",
+        "lib/netstandard2.0/System.Threading.Channels.xml",
+        "lib/netstandard2.1/System.Threading.Channels.dll",
+        "lib/netstandard2.1/System.Threading.Channels.xml",
+        "system.threading.channels.6.0.0.nupkg.sha512",
+        "system.threading.channels.nuspec",
+        "useSharedDesignerContext.txt"
+      ]
+    },
+    "MeshHub.Core/1.0.0": {
+      "type": "project",
+      "path": "../MeshHub.Core/MeshHub.Core.csproj",
+      "msbuildProject": "../MeshHub.Core/MeshHub.Core.csproj"
+    }
+  },
+  "projectFileDependencyGroups": {
+    "net8.0": [
+      "AltV.Net >= 16.4.28-rc.2",
+      "AltV.Net.Async >= 16.4.28-rc.2",
+      "MeshHub.Core >= 1.0.0"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\derbi\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "F:\\rpf-repositories\\altv-cw-module\\MeshHub.Rpf\\MeshHub.Rpf.csproj",
+      "projectName": "meshhub-rpf-module",
+      "projectPath": "F:\\rpf-repositories\\altv-cw-module\\MeshHub.Rpf\\MeshHub.Rpf.csproj",
+      "packagesPath": "C:\\Users\\derbi\\.nuget\\packages\\",
+      "outputPath": "F:\\rpf-repositories\\altv-cw-module\\MeshHub.Rpf\\obj\\",
+      "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
+      "configFilePaths": [
+        "C:\\Users\\derbi\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
+      "originalTargetFrameworks": [
+        "net8.0"
+      ],
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "projectReferences": {
+            "F:\\rpf-repositories\\altv-cw-module\\MeshHub.Core\\MeshHub.Core.csproj": {
+              "projectPath": "F:\\rpf-repositories\\altv-cw-module\\MeshHub.Core\\MeshHub.Core.csproj"
+            }
+          }
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
+      }
+    },
+    "frameworks": {
+      "net8.0": {
+        "targetAlias": "net8.0",
+        "dependencies": {
+          "AltV.Net": {
+            "target": "Package",
+            "version": "[16.4.28-rc.2, )"
+          },
+          "AltV.Net.Async": {
+            "target": "Package",
+            "version": "[16.4.28-rc.2, )"
+          }
+        },
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48",
+          "net481"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}

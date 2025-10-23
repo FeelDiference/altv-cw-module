@@ -1,0 +1,15 @@
+/Users/feeld/Documents/GO_BACK_JIRA/codewalker_cli/CodeWalker.Core/bin/Debug/netstandard2.0/ShadersGen9Conversion.xml
+/Users/feeld/Documents/GO_BACK_JIRA/codewalker_cli/CodeWalker.Core/bin/Debug/netstandard2.0/strings.txt
+/Users/feeld/Documents/GO_BACK_JIRA/codewalker_cli/CodeWalker.Core/bin/Debug/netstandard2.0/CodeWalker.Core.deps.json
+/Users/feeld/Documents/GO_BACK_JIRA/codewalker_cli/CodeWalker.Core/bin/Debug/netstandard2.0/CodeWalker.Core.dll
+/Users/feeld/Documents/GO_BACK_JIRA/codewalker_cli/CodeWalker.Core/bin/Debug/netstandard2.0/CodeWalker.Core.pdb
+/Users/feeld/Documents/GO_BACK_JIRA/codewalker_cli/CodeWalker.Core/obj/Debug/netstandard2.0/CodeWalker.Core.csproj.AssemblyReference.cache
+/Users/feeld/Documents/GO_BACK_JIRA/codewalker_cli/CodeWalker.Core/obj/Debug/netstandard2.0/CodeWalker.Core.Properties.Resources.resources
+/Users/feeld/Documents/GO_BACK_JIRA/codewalker_cli/CodeWalker.Core/obj/Debug/netstandard2.0/CodeWalker.Core.csproj.GenerateResource.cache
+/Users/feeld/Documents/GO_BACK_JIRA/codewalker_cli/CodeWalker.Core/obj/Debug/netstandard2.0/CodeWalker.Core.GeneratedMSBuildEditorConfig.editorconfig
+/Users/feeld/Documents/GO_BACK_JIRA/codewalker_cli/CodeWalker.Core/obj/Debug/netstandard2.0/CodeWalker.Core.AssemblyInfoInputs.cache
+/Users/feeld/Documents/GO_BACK_JIRA/codewalker_cli/CodeWalker.Core/obj/Debug/netstandard2.0/CodeWalker.Core.AssemblyInfo.cs
+/Users/feeld/Documents/GO_BACK_JIRA/codewalker_cli/CodeWalker.Core/obj/Debug/netstandard2.0/CodeWalker.Core.csproj.CoreCompileInputs.cache
+/Users/feeld/Documents/GO_BACK_JIRA/codewalker_cli/CodeWalker.Core/obj/Debug/netstandard2.0/CodeWalker.Core.sourcelink.json
+/Users/feeld/Documents/GO_BACK_JIRA/codewalker_cli/CodeWalker.Core/obj/Debug/netstandard2.0/CodeWalker.Core.dll
+/Users/feeld/Documents/GO_BACK_JIRA/codewalker_cli/CodeWalker.Core/obj/Debug/netstandard2.0/CodeWalker.Core.pdb
