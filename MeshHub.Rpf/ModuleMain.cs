@@ -13,6 +13,7 @@ namespace MeshHub.Rpf
         public static Services.RpfService? RpfService { get; private set; }
         public static Services.HandlingService? HandlingService { get; private set; }
         public static Services.MeshService? MeshService { get; private set; }
+        public static Services.AutoUpdaterService? AutoUpdater { get; private set; }
 
         public override void OnStart()
         {
@@ -24,11 +25,20 @@ namespace MeshHub.Rpf
                 RpfService = new Services.RpfService();
                 HandlingService = new Services.HandlingService(RpfService);
                 MeshService = new Services.MeshService(RpfService);
+                
+                // Получаем версию от JS ресурса meshhub
+                string currentVersion = GetMeshhubVersion();
+                Alt.Log($"[MeshHub.Rpf Resource] 📋 Meshhub version from JS: {currentVersion}");
+                
+                AutoUpdater = new Services.AutoUpdaterService(currentVersion);
 
                 Alt.Log("[MeshHub.Rpf Resource] ✅ Services initialized");
 
                 // Регистрируем экспорты для межресурсного взаимодействия
                 RegisterExports();
+                
+                // Инициализируем систему автообновления
+                AutoUpdater.Initialize();
 
                 Alt.Log("[MeshHub.Rpf Resource] ✅ C# resource started successfully!");
             }
@@ -38,10 +48,48 @@ namespace MeshHub.Rpf
                 Alt.LogError($"[MeshHub.Rpf Resource] Stack trace: {ex.StackTrace}");
             }
         }
+        
+        /// <summary>
+        /// Получает версию ресурса meshhub из constants.js
+        /// </summary>
+        private string GetMeshhubVersion()
+        {
+            try
+            {
+                // Читаем constants.js из ресурса meshhub
+                var cwd = System.IO.Directory.GetCurrentDirectory();
+                var constantsPath = System.IO.Path.Combine(cwd, "resources", "meshhub", "server", "config", "constants.js");
+                
+                if (System.IO.File.Exists(constantsPath))
+                {
+                    var content = System.IO.File.ReadAllText(constantsPath);
+                    
+                    // Ищем строку с версией: version: '0.1',
+                    var versionMatch = System.Text.RegularExpressions.Regex.Match(content, @"version:\s*['""]([^'""]+)['""]");
+                    if (versionMatch.Success)
+                    {
+                        var version = versionMatch.Groups[1].Value;
+                        Alt.Log($"[MeshHub.Rpf Resource] ✅ Read version from constants.js: {version}");
+                        return version;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Alt.LogWarning($"[MeshHub.Rpf Resource] ⚠️ Failed to read version from constants.js: {ex.Message}");
+            }
+            
+            // Fallback - используем версию по умолчанию
+            Alt.LogWarning("[MeshHub.Rpf Resource] ⚠️ Using fallback version 0.1");
+            return "0.1";
+        }
 
         public override void OnStop()
         {
             Alt.Log("[MeshHub.Rpf Resource] 🛑 Stopping resource...");
+            
+            // Освобождаем ресурсы автоапдейтера
+            AutoUpdater?.Dispose();
         }
 
         /// <summary>

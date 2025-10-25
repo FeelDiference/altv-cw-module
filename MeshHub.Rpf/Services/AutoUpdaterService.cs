@@ -16,7 +16,6 @@ namespace MeshHub.Rpf.Services
     public class AutoUpdaterService
     {
         private const int UPDATE_CHECK_INTERVAL_MS = 3600000; // 1 час
-        private const int INITIAL_DELAY_MS = 10000; // 10 секунд после старта
         private const string RESOURCE_NAME = "meshhub";
         private const string SOFTWARE_NAME = "MeshHub"; // Имя софта на backend для поиска
         
@@ -29,6 +28,7 @@ namespace MeshHub.Rpf.Services
         private readonly HttpClient _httpClient;
         private readonly string _resourcePath;
         private readonly string _backupPath;
+        private readonly string _newVersionPath; // Путь для новой версии (meshhub_new)
         
         private Timer? _updateCheckTimer;
         private bool _isChecking = false;
@@ -42,6 +42,7 @@ namespace MeshHub.Rpf.Services
             var cwd = Directory.GetCurrentDirectory();
             _resourcePath = Path.Combine(cwd, "resources", RESOURCE_NAME);
             _backupPath = Path.Combine(cwd, "resources", $"{RESOURCE_NAME}.old");
+            _newVersionPath = Path.Combine(cwd, "resources", $"{RESOURCE_NAME}_new"); // Для отложенного обновления
             
             // Настройка HTTP клиента
             var handler = new HttpClientHandler
@@ -65,6 +66,10 @@ namespace MeshHub.Rpf.Services
         {
             Alt.Log("[AutoUpdate] 🚀 Initializing auto-updater...");
             
+            // ВАЖНО: Сначала проверяем наличие отложенного обновления
+            // Это должно произойти ДО загрузки других ресурсов
+            CheckAndApplyPendingUpdate();
+            
             // Проверяем конфигурацию
             if (!IsConfigured())
             {
@@ -77,12 +82,9 @@ namespace MeshHub.Rpf.Services
             Alt.Log($"[AutoUpdate] Backend URL: {BACKEND_URL}");
             Alt.Log($"[AutoUpdate] Software name: {SOFTWARE_NAME}");
             
-            // Первая проверка через 10 секунд после старта
-            Task.Run(async () =>
-            {
-                await Task.Delay(INITIAL_DELAY_MS);
-                await CheckForUpdatesAsync();
-            });
+            // Первая проверка СРАЗУ при старте
+            Alt.Log("[AutoUpdate] 🔍 Performing initial update check...");
+            Task.Run(async () => await CheckForUpdatesAsync());
             
             // Периодическая проверка каждый час
             _updateCheckTimer = new Timer(
@@ -94,6 +96,86 @@ namespace MeshHub.Rpf.Services
             
             Alt.Log($"[AutoUpdate] ✅ Auto-updater initialized");
             Alt.Log($"[AutoUpdate] Update checks every {UPDATE_CHECK_INTERVAL_MS / 60000} minutes");
+        }
+
+        /// <summary>
+        /// Проверяет и применяет отложенное обновление (если есть meshhub_new)
+        /// Вызывается при загрузке модуля ДО загрузки ресурса meshhub
+        /// </summary>
+        private void CheckAndApplyPendingUpdate()
+        {
+            try
+            {
+                // Проверяем наличие папки meshhub_new
+                if (!Directory.Exists(_newVersionPath))
+                {
+                    // Нет отложенного обновления
+                    return;
+                }
+                
+                Alt.Log("========================================");
+                Alt.Log("🔄 PENDING UPDATE DETECTED!");
+                Alt.Log("========================================");
+                Alt.Log($"[AutoUpdate] Found pending update in: {_newVersionPath}");
+                Alt.Log($"[AutoUpdate] NOTE: This check happens BEFORE {RESOURCE_NAME} is loaded");
+                
+                // Даём серверу время завершить сканирование папок
+                Alt.Log("[AutoUpdate] Waiting for server to release file handles...");
+                System.Threading.Thread.Sleep(2000);
+                
+                // НОВЫЙ ПОДХОД: Запускаем PowerShell скрипт для копирования
+                // Это обходит проблемы с блокировкой .git и других служебных файлов
+                
+                Alt.Log($"[AutoUpdate] Starting PowerShell update script...");
+                Alt.Log($"[AutoUpdate] Source: {_newVersionPath}");
+                Alt.Log($"[AutoUpdate] Target: {_resourcePath}");
+                
+                bool scriptSuccess = RunUpdateScript();
+                
+                if (!scriptSuccess)
+                {
+                    Alt.LogError("[AutoUpdate] ❌ PowerShell script failed, trying direct copy as fallback...");
+                    
+                    // Fallback - пробуем прямое копирование
+                    try
+                    {
+                        CopyDirectoryContents(_newVersionPath, _resourcePath, overwrite: true);
+                        Alt.Log($"[AutoUpdate] ✅ Files replaced successfully (fallback method)!");
+                    }
+                    catch (Exception ex)
+                    {
+                        Alt.LogError($"[AutoUpdate] ❌ Fallback copy also failed: {ex.Message}");
+                        throw;
+                    }
+                }
+                
+                // Удаляем meshhub_new после успешного копирования
+                Alt.Log($"[AutoUpdate] Cleaning up {RESOURCE_NAME}_new...");
+                try
+                {
+                    Directory.Delete(_newVersionPath, true);
+                    Alt.Log($"[AutoUpdate] ✅ Cleanup completed");
+                }
+                catch (Exception ex)
+                {
+                    Alt.LogWarning($"[AutoUpdate] ⚠️ Could not delete {RESOURCE_NAME}_new: {ex.Message}");
+                    Alt.LogWarning($"[AutoUpdate] You can manually delete it later");
+                }
+                
+                Alt.Log("========================================");
+                Alt.LogWarning("⚠️  UPDATE APPLIED SUCCESSFULLY!");
+                Alt.LogWarning("⚠️  PLEASE RESTART THE SERVER NOW!");
+                Alt.LogWarning("⚠️  Shut down the server and start it again.");
+                Alt.Log("========================================");
+            }
+            catch (Exception ex)
+            {
+                Alt.LogError($"[AutoUpdate] ❌ Failed to apply pending update: {ex.Message}");
+                Alt.LogError($"[AutoUpdate] Stack trace: {ex.StackTrace}");
+                Alt.LogError("[AutoUpdate] You may need to manually rename folders:");
+                Alt.LogError($"[AutoUpdate] - Delete: {_resourcePath}");
+                Alt.LogError($"[AutoUpdate] - Rename: {_newVersionPath} → {_resourcePath}");
+            }
         }
 
         /// <summary>
@@ -200,7 +282,8 @@ namespace MeshHub.Rpf.Services
         }
 
         /// <summary>
-        /// Скачивает и устанавливает обновление
+        /// Скачивает и подготавливает обновление (распаковывает в meshhub_new)
+        /// Фактическая установка произойдет при следующем запуске сервера
         /// </summary>
         public async Task<bool> DownloadAndInstallAsync(UpdateInfo updateInfo)
         {
@@ -209,14 +292,11 @@ namespace MeshHub.Rpf.Services
                 Alt.Log($"[AutoUpdate] 📥 Starting download of version {updateInfo.Version}...");
                 Alt.Log($"[AutoUpdate] File size: {updateInfo.FileSize / 1024.0 / 1024.0:F2} MB");
                 
-                // Создаем бэкап текущей версии
-                Alt.Log("[AutoUpdate] 💾 Creating backup of current version...");
-                var backupSuccess = CreateBackup();
-                
-                if (!backupSuccess)
+                // Удаляем старую папку meshhub_new если существует
+                if (Directory.Exists(_newVersionPath))
                 {
-                    Alt.LogError("[AutoUpdate] ❌ Failed to create backup, aborting update for safety");
-                    return false;
+                    Alt.Log($"[AutoUpdate] Removing old pending update: {_newVersionPath}");
+                    Directory.Delete(_newVersionPath, true);
                 }
                 
                 // DownloadUrl уже содержится в updateInfo (получили из /api/software)
@@ -247,39 +327,41 @@ namespace MeshHub.Rpf.Services
                 
                 Alt.Log($"[AutoUpdate] ✅ Downloaded: {zipPath} ({zipData.Length / 1024.0 / 1024.0:F2} MB)");
                 
-                // Устанавливаем обновление
-                Alt.Log("[AutoUpdate] 📦 Installing update...");
-                var installSuccess = InstallUpdate(zipPath, updateInfo.Version);
+                // Распаковываем в meshhub_new
+                Alt.Log("[AutoUpdate] 📦 Extracting update to meshhub_new...");
+                var installSuccess = PrepareUpdate(zipPath, updateInfo.Version);
                 
                 if (installSuccess)
                 {
-                    Alt.Log($"[AutoUpdate] 🎉 Update to version {updateInfo.Version} installed successfully!");
-                    Alt.Log("[AutoUpdate] 🔄 Please restart the server to load new version");
-                    Alt.Log("[AutoUpdate] 💡 Command: restart meshhub");
+                    Alt.Log("========================================");
+                    Alt.LogWarning($"✅ UPDATE DOWNLOADED AND PREPARED!");
+                    Alt.LogWarning($"📦 New version {updateInfo.Version} is ready");
+                    Alt.LogWarning("⚠️  PLEASE RESTART THE SERVER");
+                    Alt.LogWarning("⚠️  The update will be applied on next startup");
+                    Alt.Log("========================================");
                     return true;
                 }
                 else
                 {
-                    Alt.LogError("[AutoUpdate] ❌ Installation failed, restoring backup...");
-                    var restoreSuccess = RestoreBackup();
-                    
-                    if (restoreSuccess)
-                    {
-                        Alt.Log("[AutoUpdate] ✅ Backup restored successfully");
-                    }
-                    else
-                    {
-                        Alt.LogError("[AutoUpdate] ❌ CRITICAL: Failed to restore backup!");
-                    }
-                    
+                    Alt.LogError("[AutoUpdate] ❌ Failed to prepare update");
                     return false;
                 }
             }
             catch (Exception ex)
             {
                 Alt.LogError($"[AutoUpdate] ❌ Download/Install error: {ex.Message}");
-                Alt.Log("[AutoUpdate] Attempting to restore backup...");
-                RestoreBackup();
+                Alt.LogError($"[AutoUpdate] Stack trace: {ex.StackTrace}");
+                
+                // Очищаем meshhub_new если что-то пошло не так
+                if (Directory.Exists(_newVersionPath))
+                {
+                    try
+                    {
+                        Directory.Delete(_newVersionPath, true);
+                    }
+                    catch { }
+                }
+                
                 return false;
             }
         }
@@ -291,6 +373,14 @@ namespace MeshHub.Rpf.Services
         {
             try
             {
+                // Останавливаем ресурс перед созданием бэкапа
+                Alt.Log($"[AutoUpdate] 🛑 Stopping {RESOURCE_NAME} resource...");
+                Alt.StopResource(RESOURCE_NAME);
+                Alt.Log($"[AutoUpdate] ✅ Resource {RESOURCE_NAME} stopped");
+                
+                // Небольшая задержка для освобождения файлов
+                System.Threading.Thread.Sleep(1000);
+                
                 // Удаляем старый бэкап если существует
                 if (Directory.Exists(_backupPath))
                 {
@@ -320,13 +410,14 @@ namespace MeshHub.Rpf.Services
         }
 
         /// <summary>
-        /// Устанавливает обновление из ZIP архива
+        /// Подготавливает обновление - распаковывает в meshhub_new
+        /// Фактическая установка произойдет при следующем запуске сервера
         /// </summary>
-        private bool InstallUpdate(string zipPath, string version)
+        private bool PrepareUpdate(string zipPath, string version)
         {
             try
             {
-                Alt.Log($"[AutoUpdate] Installing update from: {zipPath}");
+                Alt.Log($"[AutoUpdate] Preparing update from: {zipPath}");
                 
                 // Создаем временную директорию для распаковки
                 var extractPath = Path.Combine(Path.GetTempPath(), $"meshhub_extract_{version}_{DateTime.Now.Ticks}");
@@ -337,14 +428,27 @@ namespace MeshHub.Rpf.Services
                 ZipFile.ExtractToDirectory(zipPath, extractPath);
                 Alt.Log("[AutoUpdate] ✅ ZIP extracted successfully");
                 
-                // Создаем новую директорию ресурса
-                Directory.CreateDirectory(_resourcePath);
+                // Проверяем структуру ZIP: если внутри есть папка meshhub, используем её
+                var sourcePath = extractPath;
+                var possibleNestedPath = Path.Combine(extractPath, RESOURCE_NAME);
                 
-                // Копируем файлы из распакованного архива
-                Alt.Log("[AutoUpdate] 🔄 Copying files...");
-                CopyDirectory(extractPath, _resourcePath);
+                if (Directory.Exists(possibleNestedPath))
+                {
+                    // ZIP содержит папку meshhub внутри
+                    Alt.Log($"[AutoUpdate] 📂 Detected nested {RESOURCE_NAME} folder in ZIP");
+                    sourcePath = possibleNestedPath;
+                }
                 
-                Alt.Log("[AutoUpdate] ✅ Files copied successfully");
+                Alt.Log($"[AutoUpdate] Source path for copy: {sourcePath}");
+                
+                // Создаем директорию meshhub_new
+                Directory.CreateDirectory(_newVersionPath);
+                
+                // Копируем файлы из распакованного архива в meshhub_new
+                Alt.Log($"[AutoUpdate] 🔄 Copying files to {RESOURCE_NAME}_new...");
+                CopyDirectory(sourcePath, _newVersionPath);
+                
+                Alt.Log("[AutoUpdate] ✅ Files copied to meshhub_new successfully");
                 
                 // Очищаем временные файлы
                 Alt.Log("[AutoUpdate] 🗑️ Cleaning up temporary files...");
@@ -358,13 +462,13 @@ namespace MeshHub.Rpf.Services
                     // Игнорируем ошибки очистки
                 }
                 
-                Alt.Log($"[AutoUpdate] ✅ Update to version {version} completed successfully");
+                Alt.Log($"[AutoUpdate] ✅ Update prepared successfully in {RESOURCE_NAME}_new");
                 
                 return true;
             }
             catch (Exception ex)
             {
-                Alt.LogError($"[AutoUpdate] ❌ Installation failed: {ex.Message}");
+                Alt.LogError($"[AutoUpdate] ❌ Preparation failed: {ex.Message}");
                 Alt.LogError($"[AutoUpdate] Stack trace: {ex.StackTrace}");
                 return false;
             }
@@ -405,9 +509,10 @@ namespace MeshHub.Rpf.Services
         }
 
         /// <summary>
-        /// Копирует директорию рекурсивно
+        /// Копирует содержимое одной директории в другую (с перезаписью)
+        /// Используется для обновления без переименования папок
         /// </summary>
-        private void CopyDirectory(string sourceDir, string destinationDir)
+        private void CopyDirectoryContents(string sourceDir, string destinationDir, bool overwrite = false)
         {
             var dir = new DirectoryInfo(sourceDir);
             
@@ -416,22 +521,79 @@ namespace MeshHub.Rpf.Services
                 throw new DirectoryNotFoundException($"Source directory not found: {sourceDir}");
             }
             
-            // Создаем директорию назначения
+            // Создаем директорию назначения если не существует
             Directory.CreateDirectory(destinationDir);
+            
+            int filesCopied = 0;
+            int directoriesCopied = 0;
             
             // Копируем файлы
             foreach (FileInfo file in dir.GetFiles())
             {
                 string targetPath = Path.Combine(destinationDir, file.Name);
-                file.CopyTo(targetPath, true);
+                file.CopyTo(targetPath, overwrite);
+                filesCopied++;
             }
             
             // Рекурсивно копируем поддиректории
             foreach (DirectoryInfo subDir in dir.GetDirectories())
             {
                 string targetPath = Path.Combine(destinationDir, subDir.Name);
-                CopyDirectory(subDir.FullName, targetPath);
+                CopyDirectoryContentsRecursive(subDir.FullName, targetPath, overwrite, ref filesCopied, ref directoriesCopied);
+                directoriesCopied++;
             }
+            
+            Alt.Log($"[AutoUpdate] Copied {filesCopied} files and {directoriesCopied} directories");
+        }
+        
+        /// <summary>
+        /// Рекурсивный помощник для копирования директорий
+        /// </summary>
+        private void CopyDirectoryContentsRecursive(string sourceDir, string destinationDir, bool overwrite, ref int filesCopied, ref int directoriesCopied)
+        {
+            var dir = new DirectoryInfo(sourceDir);
+            
+            // Создаем директорию назначения
+            Directory.CreateDirectory(destinationDir);
+            
+            // Копируем файлы
+            foreach (FileInfo file in dir.GetFiles())
+            {
+                try
+                {
+                    string targetPath = Path.Combine(destinationDir, file.Name);
+                    file.CopyTo(targetPath, overwrite);
+                    filesCopied++;
+                }
+                catch (Exception ex)
+                {
+                    // Логируем но продолжаем копирование
+                    Alt.LogWarning($"[AutoUpdate] ⚠️ Failed to copy file {file.Name}: {ex.Message}");
+                }
+            }
+            
+            // Рекурсивно копируем поддиректории (исключая только .git и другие VCS папки)
+            foreach (DirectoryInfo subDir in dir.GetDirectories())
+            {
+                // Пропускаем ТОЛЬКО служебные папки VCS (НЕ исключаем node_modules - она нужна!)
+                if (subDir.Name == ".git" || subDir.Name == ".svn" || subDir.Name == ".vs" || subDir.Name == ".idea")
+                {
+                    Alt.Log($"[AutoUpdate] ⏭️ Skipping directory: {subDir.Name}");
+                    continue;
+                }
+                
+                string targetPath = Path.Combine(destinationDir, subDir.Name);
+                CopyDirectoryContentsRecursive(subDir.FullName, targetPath, overwrite, ref filesCopied, ref directoriesCopied);
+                directoriesCopied++;
+            }
+        }
+        
+        /// <summary>
+        /// Копирует директорию (старый метод для обратной совместимости)
+        /// </summary>
+        private void CopyDirectory(string sourceDir, string destinationDir)
+        {
+            CopyDirectoryContents(sourceDir, destinationDir, overwrite: true);
         }
 
         /// <summary>
@@ -463,6 +625,145 @@ namespace MeshHub.Rpf.Services
                 Alt.LogError($"[AutoUpdate] Version comparison error: {ex.Message}");
                 return 0;
             }
+        }
+
+        /// <summary>
+        /// Запускает PowerShell скрипт для обновления файлов
+        /// </summary>
+        private bool RunUpdateScript()
+        {
+            try
+            {
+                var cwd = Directory.GetCurrentDirectory();
+                var scriptPath = Path.Combine(cwd, "update-meshhub.ps1");
+                
+                if (!File.Exists(scriptPath))
+                {
+                    Alt.LogWarning($"[AutoUpdate] ⚠️ Update script not found: {scriptPath}");
+                    return false;
+                }
+                
+                Alt.Log($"[AutoUpdate] 🔧 Executing PowerShell script: {scriptPath}");
+                
+                var processInfo = new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = "powershell.exe",
+                    Arguments = $"-ExecutionPolicy Bypass -File \"{scriptPath}\"",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true,
+                    WorkingDirectory = cwd
+                };
+                
+                using (var process = System.Diagnostics.Process.Start(processInfo))
+                {
+                    if (process == null)
+                    {
+                        Alt.LogError("[AutoUpdate] ❌ Failed to start PowerShell process");
+                        return false;
+                    }
+                    
+                    // Читаем вывод скрипта
+                    string output = process.StandardOutput.ReadToEnd();
+                    string errors = process.StandardError.ReadToEnd();
+                    
+                    process.WaitForExit(30000); // Ждём максимум 30 секунд
+                    
+                    if (!string.IsNullOrEmpty(output))
+                    {
+                        Alt.Log($"[AutoUpdate] Script output:\n{output}");
+                    }
+                    
+                    if (!string.IsNullOrEmpty(errors))
+                    {
+                        Alt.LogWarning($"[AutoUpdate] Script errors:\n{errors}");
+                    }
+                    
+                    if (process.ExitCode == 0)
+                    {
+                        Alt.Log("[AutoUpdate] ✅ PowerShell script completed successfully");
+                        return true;
+                    }
+                    else
+                    {
+                        Alt.LogError($"[AutoUpdate] ❌ PowerShell script failed with exit code: {process.ExitCode}");
+                        return false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Alt.LogError($"[AutoUpdate] ❌ Failed to run PowerShell script: {ex.Message}");
+                Alt.LogError($"[AutoUpdate] Stack trace: {ex.StackTrace}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Переименовывает директорию с повторными попытками
+        /// </summary>
+        private void RetryMoveDirectory(string source, string destination, int maxRetries = 5)
+        {
+            for (int attempt = 1; attempt <= maxRetries; attempt++)
+            {
+                try
+                {
+                    if (attempt > 1)
+                    {
+                        Alt.Log($"[AutoUpdate] Retry attempt {attempt}/{maxRetries}...");
+                        System.Threading.Thread.Sleep(1000 * attempt); // Увеличивающаяся задержка
+                    }
+                    
+                    Directory.Move(source, destination);
+                    return; // Успешно
+                }
+                catch (IOException ex) when (attempt < maxRetries)
+                {
+                    Alt.LogWarning($"[AutoUpdate] ⚠️ Move failed (attempt {attempt}/{maxRetries}): {ex.Message}");
+                    // Продолжаем попытки
+                }
+                catch (UnauthorizedAccessException ex) when (attempt < maxRetries)
+                {
+                    Alt.LogWarning($"[AutoUpdate] ⚠️ Access denied (attempt {attempt}/{maxRetries}): {ex.Message}");
+                    // Продолжаем попытки
+                }
+            }
+            
+            // Все попытки исчерпаны
+            throw new IOException($"Failed to move directory after {maxRetries} attempts: {source} → {destination}");
+        }
+        
+        /// <summary>
+        /// Удаляет директорию с повторными попытками
+        /// </summary>
+        private void RetryDeleteDirectory(string path, int maxRetries = 3)
+        {
+            for (int attempt = 1; attempt <= maxRetries; attempt++)
+            {
+                try
+                {
+                    if (attempt > 1)
+                    {
+                        Alt.Log($"[AutoUpdate] Delete retry {attempt}/{maxRetries}...");
+                        System.Threading.Thread.Sleep(1000);
+                    }
+                    
+                    Directory.Delete(path, true);
+                    return; // Успешно
+                }
+                catch (IOException ex) when (attempt < maxRetries)
+                {
+                    Alt.LogWarning($"[AutoUpdate] ⚠️ Delete failed (attempt {attempt}/{maxRetries}): {ex.Message}");
+                }
+                catch (UnauthorizedAccessException ex) when (attempt < maxRetries)
+                {
+                    Alt.LogWarning($"[AutoUpdate] ⚠️ Delete access denied (attempt {attempt}/{maxRetries}): {ex.Message}");
+                }
+            }
+            
+            // Не критично если не удалось удалить backup
+            Alt.LogWarning($"[AutoUpdate] ⚠️ Could not delete {path} after {maxRetries} attempts");
         }
 
         /// <summary>
