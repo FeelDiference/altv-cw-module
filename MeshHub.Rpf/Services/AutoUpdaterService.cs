@@ -98,7 +98,7 @@ namespace MeshHub.Rpf.Services
 
         /// <summary>
         /// Проверяет наличие обновлений на backend
-        /// Запрашивает список всех software и ищет MeshHub
+        /// Запрашивает конкретный софт по SOFTWARE_ID
         /// </summary>
         public async Task<UpdateInfo?> CheckForUpdatesAsync()
         {
@@ -114,44 +114,35 @@ namespace MeshHub.Rpf.Services
                 
                 Alt.Log("[AutoUpdate] 🔍 Checking for updates...");
                 Alt.Log($"[AutoUpdate] Current version: {_currentVersion}");
+                Alt.Log($"[AutoUpdate] Software ID: {MaskSecret(SOFTWARE_ID)}");
                 
-                // Запрашиваем список всех software с фильтром по server_type=altv
-                var url = $"{BACKEND_URL}/api/software?server=altv";
+                // Запрашиваем конкретный софт по ID (более надежно чем поиск по имени)
+                var url = $"{BACKEND_URL}/api/software/{SOFTWARE_ID}";
                 var response = await _httpClient.GetAsync(url);
                 
                 if (!response.IsSuccessStatusCode)
                 {
-                    Alt.LogWarning($"[AutoUpdate] ⚠️ Failed to get software list: {response.StatusCode}");
+                    Alt.LogWarning($"[AutoUpdate] ⚠️ Failed to get software: {response.StatusCode}");
+                    if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                    {
+                        Alt.LogError("[AutoUpdate] ❌ API key is invalid or revoked");
+                    }
                     return null;
                 }
                 
                 var content = await response.Content.ReadAsStringAsync();
-                var softwareList = JsonSerializer.Deserialize<SoftwareInfo[]>(content);
+                var software = JsonSerializer.Deserialize<SoftwareInfo>(content);
                 
-                if (softwareList == null || softwareList.Length == 0)
+                if (software == null)
                 {
-                    Alt.LogWarning("[AutoUpdate] ⚠️ No software found on backend");
+                    Alt.LogWarning("[AutoUpdate] ⚠️ Failed to parse software response");
                     return null;
                 }
                 
-                // Ищем MeshHub в списке
-                var meshHubSoftware = Array.Find(softwareList, sw => 
-                    sw.Name != null && 
-                    sw.Name.Equals(SOFTWARE_NAME, StringComparison.OrdinalIgnoreCase) &&
-                    sw.ServerType != null &&
-                    sw.ServerType.Equals("altv", StringComparison.OrdinalIgnoreCase)
-                );
-                
-                if (meshHubSoftware == null)
-                {
-                    Alt.LogWarning($"[AutoUpdate] ⚠️ '{SOFTWARE_NAME}' not found in software list");
-                    Alt.Log($"[AutoUpdate] Available software ({softwareList.Length}): {string.Join(", ", Array.ConvertAll(softwareList, sw => sw.Name ?? "unknown"))}");
-                    return null;
-                }
-                
-                var latestVersion = meshHubSoftware.Version ?? "0.0.0";
-                Alt.Log($"[AutoUpdate] Found '{SOFTWARE_NAME}' on backend");
+                var latestVersion = software.Version ?? "0.0.0";
+                Alt.Log($"[AutoUpdate] ✅ Found software: {software.Name}");
                 Alt.Log($"[AutoUpdate] Latest version: {latestVersion}");
+                Alt.Log($"[AutoUpdate] Server type: {software.ServerType}");
                 
                 // Сравниваем версии
                 var comparison = CompareVersions(latestVersion, _currentVersion);
@@ -162,11 +153,11 @@ namespace MeshHub.Rpf.Services
                     
                     var updateInfo = new UpdateInfo
                     {
-                        Id = meshHubSoftware.Id ?? "",
+                        Id = software.Id ?? "",
                         Version = latestVersion,
-                        DownloadUrl = meshHubSoftware.DownloadUrl ?? "",
-                        FileSize = meshHubSoftware.FileSize,
-                        Name = meshHubSoftware.Name ?? ""
+                        DownloadUrl = software.DownloadUrl ?? "",
+                        FileSize = software.FileSize,
+                        Name = software.Name ?? ""
                     };
                     
                     // Автоматически скачиваем и устанавливаем
