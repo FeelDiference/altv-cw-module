@@ -505,12 +505,25 @@ namespace MeshHub.Rpf.Services
         /// </summary>
         private class SoftwareInfo
         {
+            [System.Text.Json.Serialization.JsonPropertyName("id")]
             public string? Id { get; set; }
+            
+            [System.Text.Json.Serialization.JsonPropertyName("name")]
             public string? Name { get; set; }
+            
+            [System.Text.Json.Serialization.JsonPropertyName("version")]
             public string? Version { get; set; }
+            
+            [System.Text.Json.Serialization.JsonPropertyName("download_url")]
             public string? DownloadUrl { get; set; }
+            
+            [System.Text.Json.Serialization.JsonPropertyName("file_size")]
             public long FileSize { get; set; }
+            
+            [System.Text.Json.Serialization.JsonPropertyName("server_type")]
             public string? ServerType { get; set; }
+            
+            [System.Text.Json.Serialization.JsonPropertyName("is_active")]
             public bool IsActive { get; set; }
         }
 
