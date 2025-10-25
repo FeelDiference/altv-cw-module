@@ -21,13 +21,9 @@ namespace MeshHub.Rpf.Services
         private const string SOFTWARE_NAME = "MeshHub"; // Имя софта на backend для поиска
         
         // Software API Key (начинается с software_)
-        // ВАЖНО: Создайте ключ через админ-панель в модалке редактирования софта!
-        // 1. Откройте https://hub.feeld.space/software
-        // 2. Нажмите на MeshHub -> Откроется модалка
-        // 3. В секции "🔑 API Ключи (software_)" нажмите "Создать ключ"
-        // 4. Скопируйте созданный ключ и вставьте сюда
-        private const string SOFTWARE_ID = "9ec151cd-3f7f-4128-8fb7-5b791388aed9";
-        private const string API_KEY = "software_ЗАМЕНИТЕ_НА_РЕАЛЬНЫЙ_КЛЮЧ_ИЗ_АДМИНКИ";
+        // Автоматически создается при загрузке софта через админ-панель
+        private const string SOFTWARE_ID = "d29cd9ab-41a9-4b15-8d68-db8b8e1862c8";
+        private const string API_KEY = "software_ad7c926ddeb5708b250b59c051c1de68c438bef7a571a71782a338c75607937c";
         private const string BACKEND_URL = "https://hub.feeld.space";
         
         private readonly HttpClient _httpClient;
