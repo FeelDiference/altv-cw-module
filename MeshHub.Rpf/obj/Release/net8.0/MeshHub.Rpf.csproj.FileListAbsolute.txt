@@ -14,13 +14,9 @@ F:\rpf-repositories\altv-cw-module\MeshHub.Rpf\bin\Release\net8.0\MeshHub.Core.d
 F:\rpf-repositories\altv-cw-module\MeshHub.Rpf\bin\Release\net8.0\MeshHub.Core.pdb
 F:\rpf-repositories\altv-cw-module\MeshHub.Rpf\obj\Release\net8.0\MeshHub.Rpf.csproj.AssemblyReference.cache
 F:\rpf-repositories\altv-cw-module\MeshHub.Rpf\obj\Release\net8.0\MeshHub.Rpf.GeneratedMSBuildEditorConfig.editorconfig
-F:\rpf-repositories\altv-cw-module\MeshHub.Rpf\obj\Release\net8.0\MeshHub.Rpf.AssemblyInfoInputs.cache
-F:\rpf-repositories\altv-cw-module\MeshHub.Rpf\obj\Release\net8.0\MeshHub.Rpf.AssemblyInfo.cs
 F:\rpf-repositories\altv-cw-module\MeshHub.Rpf\obj\Release\net8.0\MeshHub.Rpf.csproj.CoreCompileInputs.cache
 F:\rpf-repositories\altv-cw-module\MeshHub.Rpf\obj\Release\net8.0\MeshHub..09C2A3DD.Up2Date
 F:\rpf-repositories\altv-cw-module\MeshHub.Rpf\obj\Release\net8.0\meshhub-rpf-module.dll
-F:\rpf-repositories\altv-cw-module\MeshHub.Rpf\obj\Release\net8.0\refint\meshhub-rpf-module.dll
 F:\rpf-repositories\altv-cw-module\MeshHub.Rpf\obj\Release\net8.0\meshhub-rpf-module.pdb
 F:\rpf-repositories\altv-cw-module\MeshHub.Rpf\obj\Release\net8.0\MeshHub.Rpf.genruntimeconfig.cache
-F:\rpf-repositories\altv-cw-module\MeshHub.Rpf\obj\Release\net8.0\ref\meshhub-rpf-module.dll
 F:\rpf-repositories\altv-cw-module\MeshHub.Rpf\obj\Release\net8.0\MeshHub.Rpf.sourcelink.json

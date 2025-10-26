@@ -255,7 +255,8 @@
     "net8.0": [
       "AltV.Net >= 16.4.28-rc.2",
       "AltV.Net.Async >= 16.4.28-rc.2",
-      "MeshHub.Core >= 1.0.0"
+      "MeshHub.Core >= 1.0.0",
+      "System.Threading.Channels >= 6.0.0"
     ]
   },
   "packageFolders": {
@@ -291,7 +292,8 @@
           "targetAlias": "net8.0",
           "projectReferences": {
             "F:\\rpf-repositories\\altv-cw-module\\MeshHub.Core\\MeshHub.Core.csproj": {
-              "projectPath": "F:\\rpf-repositories\\altv-cw-module\\MeshHub.Core\\MeshHub.Core.csproj"
+              "projectPath": "F:\\rpf-repositories\\altv-cw-module\\MeshHub.Core\\MeshHub.Core.csproj",
+              "privateAssets": "all"
             }
           }
         }
@@ -318,6 +320,10 @@
           "AltV.Net.Async": {
             "target": "Package",
             "version": "[16.4.28-rc.2, )"
+          },
+          "System.Threading.Channels": {
+            "target": "Package",
+            "version": "[6.0.0, )"
           }
         },
         "imports": [

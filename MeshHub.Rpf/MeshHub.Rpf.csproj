@@ -10,13 +10,43 @@
     <AssemblyName>meshhub-rpf-module</AssemblyName>
     <RootNamespace>MeshHub.Rpf</RootNamespace>
     <EnableDynamicLoading>true</EnableDynamicLoading>
+    
+    <!-- ⚡ ОПТИМИЗАЦИЯ: Копировать ВСЕ зависимости локально для быстрого старта -->
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <PreserveCompilationContext>false</PreserveCompilationContext>
+    <CopyDebugSymbolFilesFromPackages>false</CopyDebugSymbolFilesFromPackages>
+    
+    <!-- ⚡ ОПТИМИЗАЦИЯ: Отключаем ненужные файлы для ускорения загрузки -->
+    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+    <GenerateDependencyFile>true</GenerateDependencyFile>
     
     <!-- Native module settings for alt:V -->
     <PublishAot>false</PublishAot>
     <EnableUnmanagedCallersOnlyAttribute>true</EnableUnmanagedCallersOnlyAttribute>
     <NativeLib>Shared</NativeLib>
     <SelfContained>false</SelfContained>
+    
+    <!-- 🛡️ МЕТАДАННЫЕ ДЛЯ АНТИВИРУСОВ: Помогает антивирусам распознать легитимное ПО -->
+    <!-- Информация о компании и продукте -->
+    <Company>Feel Diference</Company>
+    <Product>MeshHub RPF Module for AltV</Product>
+    <Authors>Feel Diference</Authors>
+    <Copyright>Copyright © 2025 Feel Diference. All rights reserved.</Copyright>
+    
+    <!-- Детальное описание для антивирусов -->
+    <Description>Server-side RPF archive handler and automatic update manager for AltV multiplayer servers. Manages game resources, handles RPF archives, monitors for updates from official backend. All operations are limited to AltV server directory only. Official site: https://hub.feeld.space Contact: obukhov@cuberender.xyz</Description>
+    
+    <!-- Версионирование -->
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <InformationalVersion>1.0.0</InformationalVersion>
+    
+    <!-- Контакты -->
+    <PackageProjectUrl>https://hub.feeld.space</PackageProjectUrl>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    
+    <!-- Генерация AssemblyInfo с дополнительными атрибутами -->
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,8 +54,11 @@
     <PackageReference Include="AltV.Net" Version="16.4.28-rc.2" />
     <PackageReference Include="AltV.Net.Async" Version="16.4.28-rc.2" />
     
+    <!-- ⚡ ВАЖНО: Явно добавляем System.Threading.Channels чтобы DLL копировалась локально -->
+    <PackageReference Include="System.Threading.Channels" Version="6.0.0" />
+    
     <!-- MeshHub Core -->
-    <ProjectReference Include="..\MeshHub.Core\MeshHub.Core.csproj" />
+    <ProjectReference Include="..\MeshHub.Core\MeshHub.Core.csproj" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>

@@ -10,7 +10,8 @@
         "dependencies": {
           "AltV.Net": "16.4.28-rc.2",
           "AltV.Net.Async": "16.4.28-rc.2",
-          "MeshHub.Core": "1.0.0"
+          "MeshHub.Core": "1.0.0",
+          "System.Threading.Channels": "6.0.0"
         },
         "runtime": {
           "meshhub-rpf-module.dll": {}
