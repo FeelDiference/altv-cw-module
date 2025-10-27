@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MeshHub.Core")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+891d948490ebafd4a2c6a010542906ee6739d600")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+52183306c9d7da573f9be9b025870ae7e49f86a6")]
 [assembly: System.Reflection.AssemblyProductAttribute("MeshHub.Core")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MeshHub.Core")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

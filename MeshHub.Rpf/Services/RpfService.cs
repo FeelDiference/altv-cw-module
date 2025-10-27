@@ -55,6 +55,13 @@ namespace MeshHub.Rpf.Services
                 _scannedArchives[archiveId] = false;
                 
                 Alt.Log($"[RpfService] ✅ Opened RPF: {rpfPath} (ID: {archiveId})");
+                
+                // Индексируем имена файлов для JenkIndex
+                if (ModuleMain.JenkIndexService != null)
+                {
+                    ModuleMain.JenkIndexService.IndexRpfArchive(rpf);
+                }
+                
                 return archiveId;
             }
             catch (Exception ex)
@@ -116,8 +123,19 @@ namespace MeshHub.Rpf.Services
 
             try
             {
+                // Нормализуем путь - заменяем backslash на forward slash
+                var normalizedPath = filePath.Replace('\\', '/');
+                
+                // ВАЖНО: Если путь начинается с имени архива (например "dlc.rpf/common/data/handling.meta")
+                // нужно убрать этот префикс, так как мы уже внутри этого архива
+                if (normalizedPath.StartsWith(rpf.NameLower + "/", StringComparison.OrdinalIgnoreCase))
+                {
+                    normalizedPath = normalizedPath.Substring(rpf.NameLower.Length + 1);
+                    Alt.Log($"[RpfService] 🔧 Removed archive name prefix, new path: {normalizedPath}");
+                }
+                
                 // Разбиваем путь на части
-                var pathParts = filePath.Split('/');
+                var pathParts = normalizedPath.Split('/');
                 var currentDir = rpf.Root;
                 RpfEntry? currentEntry = null;
                 RpfFile currentRpf = rpf;
@@ -276,6 +294,8 @@ namespace MeshHub.Rpf.Services
                 }
 
                 // Заменяем файл
+                // CreateFile уже вызывает InsertFileSpace → EnsureAllEntries → WriteHeader
+                // Это обновляет заголовок RPF и записывает данные на диск
                 RpfFile.CreateFile(parentDir, fileEntry.Name, newContent, overwrite: true);
                 
                 Alt.Log($"[RpfService] ✅ Replaced file: {filePath} ({newContent.Length} bytes)");
@@ -353,6 +373,13 @@ namespace MeshHub.Rpf.Services
         /// <summary>
         /// Получить RPF архив по ID (внутренний метод)
         /// </summary>
+        internal RpfFile? GetRpfArchive(string archiveId)
+        {
+            return _openedArchives.TryGetValue(archiveId, out var rpf) ? rpf : null;
+        }
+    }
+}
+
         internal RpfFile? GetRpfArchive(string archiveId)
         {
             return _openedArchives.TryGetValue(archiveId, out var rpf) ? rpf : null;

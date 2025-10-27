@@ -13,6 +13,8 @@ namespace MeshHub.Rpf
         public static Services.RpfService? RpfService { get; private set; }
         public static Services.HandlingService? HandlingService { get; private set; }
         public static Services.MeshService? MeshService { get; private set; }
+        public static Services.InteriorService? InteriorService { get; private set; }
+        public static Services.JenkIndexService? JenkIndexService { get; private set; }
         public static Services.AutoUpdaterService? AutoUpdater { get; private set; }
 
         public override void OnStart()
@@ -25,6 +27,14 @@ namespace MeshHub.Rpf
                 RpfService = new Services.RpfService();
                 HandlingService = new Services.HandlingService(RpfService);
                 MeshService = new Services.MeshService(RpfService);
+                
+                // Инициализируем Jenkins Index словарь
+                var cwd = System.IO.Directory.GetCurrentDirectory();
+                var resourcePath = System.IO.Path.Combine(cwd, "resources", "meshhub-rpf");
+                JenkIndexService = new Services.JenkIndexService(resourcePath);
+                JenkIndexService.LoadBaseDictionary();
+                
+                InteriorService = new Services.InteriorService(RpfService);
                 
                 // Получаем версию от JS ресурса meshhub
                 string currentVersion = GetMeshhubVersion();
@@ -220,6 +230,36 @@ namespace MeshHub.Rpf
                     }
                 }));
 
+                // Interior YTYP поиск
+                Alt.Export("findMloYtypXml", new Func<string, string, string?>((archiveId, interiorName) =>
+                {
+                    try
+                    {
+                        Alt.Log($"[MeshHub.Rpf] Finding MLO YTYP: {interiorName}");
+                        return InteriorService?.FindMloYtypXml(archiveId, interiorName);
+                    }
+                    catch (Exception ex)
+                    {
+                        Alt.LogError($"[MeshHub.Rpf] Error finding MLO YTYP: {ex.Message}");
+                        return null;
+                    }
+                }));
+
+                // Interior Entity Sets
+                Alt.Export("getMloEntitySets", new Func<string, string, string[]?>((archiveId, interiorName) =>
+                {
+                    try
+                    {
+                        Alt.Log($"[MeshHub.Rpf] Getting MLO entity sets: {interiorName}");
+                        return InteriorService?.GetMloEntitySets(archiveId, interiorName);
+                    }
+                    catch (Exception ex)
+                    {
+                        Alt.LogError($"[MeshHub.Rpf] Error getting entity sets: {ex.Message}");
+                        return null;
+                    }
+                }));
+
                 Alt.Log("[MeshHub.Rpf Resource] ✅ Exports registered successfully");
                 Alt.Log("[MeshHub.Rpf Resource] Available exports:");
                 Alt.Log("  - openRpfArchive(path)");
@@ -230,6 +270,50 @@ namespace MeshHub.Rpf
                 Alt.Log("  - getHandlingXml(archiveId, filePath)");
                 Alt.Log("  - saveHandlingXml(archiveId, filePath, xml)");
                 Alt.Log("  - extractVehicleMeshData(vehicleName)");
+                Alt.Log("  - findMloYtypXml(archiveId, interiorName)");
+                Alt.Log("  - getMloEntitySets(archiveId, interiorName)");
+            }
+            catch (Exception ex)
+            {
+                Alt.LogError($"[MeshHub.Rpf Resource] ❌ Error registering exports: {ex.Message}");
+            }
+        }
+    }
+}
+
+
+                        Alt.LogError($"[MeshHub.Rpf] Error finding MLO YTYP: {ex.Message}");
+                        return null;
+                    }
+                }));
+
+                // Interior Entity Sets
+                Alt.Export("getMloEntitySets", new Func<string, string, string[]?>((archiveId, interiorName) =>
+                {
+                    try
+                    {
+                        Alt.Log($"[MeshHub.Rpf] Getting MLO entity sets: {interiorName}");
+                        return InteriorService?.GetMloEntitySets(archiveId, interiorName);
+                    }
+                    catch (Exception ex)
+                    {
+                        Alt.LogError($"[MeshHub.Rpf] Error getting entity sets: {ex.Message}");
+                        return null;
+                    }
+                }));
+
+                Alt.Log("[MeshHub.Rpf Resource] ✅ Exports registered successfully");
+                Alt.Log("[MeshHub.Rpf Resource] Available exports:");
+                Alt.Log("  - openRpfArchive(path)");
+                Alt.Log("  - findHandlingMeta(archiveId)");
+                Alt.Log("  - extractFile(archiveId, filePath)");
+                Alt.Log("  - replaceFile(archiveId, filePath, content)");
+                Alt.Log("  - closeRpfArchive(archiveId)");
+                Alt.Log("  - getHandlingXml(archiveId, filePath)");
+                Alt.Log("  - saveHandlingXml(archiveId, filePath, xml)");
+                Alt.Log("  - extractVehicleMeshData(vehicleName)");
+                Alt.Log("  - findMloYtypXml(archiveId, interiorName)");
+                Alt.Log("  - getMloEntitySets(archiveId, interiorName)");
             }
             catch (Exception ex)
             {
